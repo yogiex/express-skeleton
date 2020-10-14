@@ -14,4 +14,7 @@ npm install --save
 ```bash
 npm run start
 ```
-
+- [x] POST
+- [x] GET
+- [x] PUT
+- [x] Delete
