@@ -1,0 +1,114 @@
+<%- include('header'); -%>
+  <body>
+    <div>
+    <h1>list data</h1>
+    <button type="button" class="btn btn-info btn-lg col-sm-3" data-toggle="modal" data-target="#ModalInsert">INSERT</button><div class="w-100"></div>
+    <table border="1" id="tabledata" class="table table-striped">
+    <tr>
+      <th>ID</th>
+      <th>nama</th>
+      <th>email</th>
+      <th>asal kota</th>
+      <th>nomer handphone</th>
+    </tr>
+    <tr>
+      <% Datas.forEach(function(data) { %> 
+          <td><%= data._id %></td>
+          <td><%= data.nama %></td>
+          <td><%= data.email %></td>
+          <td><%= data.asalKota %></td>
+          <td><%= data.nomerHp %></td>            
+    </tr>
+      <% }) %>
+  </table>
+
+
+<!-- Modal insert-->
+<div class="modal fade" id="ModalInsert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">masukkan data mas</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <label for="inputNama">Nama</label>
+          <input type="text" class="form-control" id="inputNama" placeholder="isi dengan nama anda">
+        </div>
+        <div>
+          <label for="inputEmail">Email</label>
+          <input type="text" class="form-control" id="inputEmail" placeholder="isi dengan email">
+        </div>
+        <div>
+          <label for="inputAsal">Asal kota</label>
+          <input type="text" class="form-control" id="inputAsal" placeholder="isi dengan kota asal anda">
+        </div>
+        <div>
+          <label for="inputAsal">Nomer Hp</label>
+          <input type="text" class="form-control" id="inputHp" placeholder="isi dengan nomer hp anda">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" id="push-button">insert</button>
+
+        <script>
+
+        const psbtn = document.getElementById('push-button');
+        const btncari = document.getElementById('btnCari');
+        const inputFormCari = document.getElementById('inputFormcari');
+        const pstNama = document.getElementById('inputNama').value;
+        const pstEmail = document.getElementById('inputEmail').value;
+        const pstAsal = document.getElementById('inputAsal').value;
+        const pstHp = document.getElementById('inputHp').value;
+  
+        psbtn.addEventListener('click', async (err)=> {
+          try {
+              const response = await fetch('/users', {
+                method: 'post',
+                headers : {
+                  'Content-Type': "application/json"
+                },
+                body: JSON.stringify(({
+                  nama: pstNama,
+                  asalKota: pstAsal,
+                  email: pstEmail,
+                  nomerHp: pstHp
+                }))
+              });
+              alert("data masuk",response.body);
+            } catch (err) {
+              console.log("gagal lurrrr")
+            }
+          });
+        
+        
+          btncari.addEventListener('click', async (err,inputFormCari) => {
+          try {
+            const response = await fetch("/api/"+inputFormCari, {
+              method: 'get',
+              header : {
+                'Accept': "application/json",
+                'Content-Type' : "application/json"
+              }
+            });
+            console.table(response)
+          } catch (error) {
+            console.log(err);
+          }
+        });
+      
+        
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</div>   
+
+<%- include('footer'); -%>
