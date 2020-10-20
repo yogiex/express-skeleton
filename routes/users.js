@@ -16,8 +16,8 @@ router.get ('/users', async (req, res, next) => {
 });
 
 /* GET one users listing. */
-//mengecek kondisi ketersediaan id lalu dibalas response dengan field yang
-//dimiliki oleh id
+// *mengecek kondisi ketersediaan id lalu dibalas response dengan field yang
+// *dimiliki oleh id
 router.get ('/users/:id', async (req, res, next) => {
   const ada = await dataModel.findOne ({_id: req.params.id});
   try {
@@ -31,7 +31,7 @@ router.get ('/users/:id', async (req, res, next) => {
   }
 });
 
-// insert data pada api
+// *insert data pada api
 router.post ('/users', async (req, res, next) => {
   const data = await new dataModel (req.body);
   try {
@@ -45,8 +45,9 @@ router.post ('/users', async (req, res, next) => {
 });
 
 //update data berdasarkan ID sebagai parameter request
-router.put ('/users/:id', async function (req, res, next) {
-  const ada = await dataModel.find ({});
+// ! progress put error lagi
+router.put ('/users/:id', async (req, res, next) => {
+  const ada = await dataModel.findOne ({_id: req.params.id});
   try {
     if (!ada) {
       await res.send ({msg: 'id tidak ada'});
@@ -77,19 +78,19 @@ router.put ('/users/:id', async function (req, res, next) {
   }
 });
 
-//delete satu berdasarkan ID sebagai parameter
-//mengecek terlebih dahulu apakah id yang digunakan sebagai
-//parameter ada atau tidaknya
+// *delete satu berdasarkan ID sebagai parameter
+//*mengecek terlebih dahulu apakah id yang digunakan sebagai
+//*parameter ada atau tidaknya
 router.delete ('/users/:id', async (req, res) => {
-  const ada = await dataModel.findOne ({_id: req.params.id});
+  const ada = await dataModel.findById ({_id: req.params.id});
   try {
     if (!ada) {
       res.send ({msg: 'id tidak ada'});
-      res.redirect ('/');
+      await res.redirect ('/');
     } else {
-      await ada.remove ({_id: req.params.id});
-      //res.status(200).send({msg:"deleted"})
-      res.redirect ('/');
+      await ada.remove ({});
+      res.status (200).send ({msg: 'deleted'});
+      //res.redirect ('/');
     }
   } catch (error) {
     res.status (400).send ({msg: 'bingung slurr'});
