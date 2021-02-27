@@ -1,15 +1,19 @@
 const express = require('express');
 const app = express();
-var morgan = require('morgan');
+const morgan = require('morgan');
 const Mongoose =  require('mongoose');
 const userModel = require('./model/user');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const bodyparser = require('body-parser');
-//import User from './model/user.js';
+
+//auth service
+const generateAccessToken = require('./auth/jwt.strategy');
+const authenticateToken = require('./auth/jwt.strategy');
+
 require('dotenv').config()
 app.use(cors());
-app.use(bodyparser());
+app.use(bodyparser.urlencoded({extended:false}))
 Mongoose.connect(process.env.MONGO_URI_TEST,{
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -18,11 +22,14 @@ Mongoose.connect(process.env.MONGO_URI_TEST,{
 app.use(morgan('dev'));
 
 
-app.get('/ping', async (req,res) =>{
+app.get('/ping', async (req,res) => {
    return await res.send({msg:'PONG!'})
 })
 
-app.post('/auth/register', async (req,res) =>{
+app.get('/auth/testing', authenticateToken, (req,rest) => {
+    return res.send({msg:'works'})
+})
+app.post('/auth/register', async (req,res) => {
     // do something stuff
     const {email, username, password} = req.body;
     
@@ -34,12 +41,21 @@ app.post('/auth/register', async (req,res) =>{
     // })
 
     try {
-        let ada = await userModel.findOne({email});
-        if(ada) return res.status(400).send("email already exist")    
-        const user = await userModel({email,username,password})
+        const token = generateAccessToken({username}) // generate token pas register
+        let ada = await userModel.findOne({email}); // nampung variable doang
+        if(ada) return res.status(400).send("email already exist")    // ngecek user jika sudah ada
+        const user = await userModel({email,username,password}) // destructuring user
         await user.save()
         console.log(user)
-        res.send('registered')
+        console.log(token)
+        //res.send('registered')
+        res.status(201).json({      // response status dan jwt
+            status:'success',       
+            token,                  
+            data:{                  
+                user
+            }
+        })
         
     } catch (error) {
         res.status(400).send(error)
@@ -47,9 +63,12 @@ app.post('/auth/register', async (req,res) =>{
 
 })
 
-app.post('/auth/login', async(req,res) =>{
+app.post('/auth/login', async(req,res) => {
+    const {username, password} = req.body;
     try {
-        // todo something
+        let ada = await userModel.findOne({username})
+        if(!ada) return res.status(404).send('username doesnt exist');
+        const user = await userModel({username,password})
     } catch (error) {
         res.status(400).send(error)
     }
