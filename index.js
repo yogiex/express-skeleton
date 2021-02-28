@@ -22,17 +22,17 @@ Mongoose.connect(process.env.MONGO_URI_TEST,{
 })
 app.use(morgan('dev'));
 
-app.use(function(req,res,next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-    next()
-})
+// app.use(function(req,res,next) {
+//     res.header('Access-Control-Allow-Origin', '*');
+//     res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
+//     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+//     next()
+// })
 app.get('/ping', async (req,res) => {
    return await res.send({msg:'PONG!'})
 })
 
-app.get('/auth/testing', authenticateToken, (req,rest) => {
+app.get('/auth/testing', authenticateToken, (req,res) => {
     // const users = new userModel()
     //  res.json(users.filter(user => user.username === req.users.email))
     //authenticateToken(req.token,process.env.ACCESS_TOKEN_SECRET)
@@ -92,12 +92,13 @@ app.post('/auth/login', async(req,res) => {
             const cmp = await bcrypt.compare(req.body.password,user.password)
             
             if(cmp){
-                const token = generateAccessToken({email:req.body.email,role:user.role})
-                //const token = generateAccessToken({user})
+                const token = generateAccessToken({id:user._id,email:req.body.email,role:user.role})
+                //const token = generateAccessToken(user._id)
                 res.status(200).json({
                     status:'auth works',
                     token: token
                 })
+               // res.header('auth-token',token)
             }else{
                 res.send(404)
             }

@@ -9,7 +9,7 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/auth/testing
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVtYWlsQGVtYWlsLmNvbSIsInJvbGUiOiJtdXJpZCIsImlhdCI6MTYxNDUzMjAzNywiZXhwIjoxNjE0NTM5MjM3fQ.Sbg9Zh0p4CtQ9aDiB8rgAxdtcWyUTVJgUtg1HORZePQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVtYWlsQGVtYWlsLmNvbSIsInJvbGUiOiJtdXJpZCIsImlhdCI6MTYxNDUzMjMxNywiZXhwIjoxNjE0NTM5NTE3fQ.pk5pQK3Tr6WyoMhLX41QYHBkeU4qgb69kFrvXZMj3QY
 
 ###
 GET http://localhost:3000/ping

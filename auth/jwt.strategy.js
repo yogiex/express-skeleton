@@ -11,7 +11,7 @@ function authenticateToken(req,res,next){
     //const authHeader = req.headers['token']
     // const token = authHeader && authHeader.split(' ')[1]
     // if(token == null) return res.sendStatus(401)
-
+   
     // jwt.verify(token, process.env.ACCESS_TOKEN_SECRET , (err,user) =>{
     //     //console.log(err)
     //     if(err) return res.sendStatus(403)
@@ -19,12 +19,12 @@ function authenticateToken(req,res,next){
     //     next()
     // })
     if(typeof authHeader !== 'undefined'){
-        const bearer = authHeader.split(' ');
+        const bearer = authHeader.split(" ");
         const bearerToken = bearer[1];
         req.token = bearerToken;
-        next();
+        next()
     } else {
-        res.sendStatus(403);
+        res.sendStatus(403)
     }
     
 }
