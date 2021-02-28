@@ -1,0 +1,15 @@
+###
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email":"email@email.com",
+    "password":"password"
+}
+
+###
+GET http://localhost:3000/auth/testing
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVtYWlsQGVtYWlsLmNvbSIsInJvbGUiOiJtdXJpZCIsImlhdCI6MTYxNDUzMjAzNywiZXhwIjoxNjE0NTM5MjM3fQ.Sbg9Zh0p4CtQ9aDiB8rgAxdtcWyUTVJgUtg1HORZePQ
+
+###
+GET http://localhost:3000/ping
