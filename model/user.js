@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const saltRounds = 8;
+const saltRounds = 10;
 const UserSchema = new mongoose.Schema({
     email: {
         type: String,
@@ -11,12 +11,19 @@ const UserSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
+        unique: true,
     },
     password: {
         type: String,
         min: 6,
         max: 30,
+        trim: true,
     },
+    role:{
+        type: String,
+        default:'murid',
+        enum:['murid','guru','admin']
+    }
 
 });
 

@@ -6,7 +6,7 @@ const userModel = require('./model/user');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const bodyparser = require('body-parser');
-
+const passport = require('passport')
 //auth service
 const generateAccessToken = require('./auth/jwt.strategy');
 const authenticateToken = require('./auth/jwt.strategy');
@@ -14,6 +14,7 @@ const authenticateToken = require('./auth/jwt.strategy');
 require('dotenv').config()
 app.use(cors());
 app.use(bodyparser.urlencoded({extended:false}))
+app.use(bodyparser.json())
 Mongoose.connect(process.env.MONGO_URI_TEST,{
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -27,8 +28,18 @@ app.get('/ping', async (req,res) => {
 })
 
 app.get('/auth/testing', authenticateToken, (req,rest) => {
-    return res.send({msg:'works'})
+
+    return res.json({msg:'auth works'})
 })
+
+// app.get('/rahasia', passport.authenticate('jwt',{session:false}),(req,res,next) =>{
+//  res.send('rahasia')
+// })
+// app.get('/token', async (req,res) =>{
+//     const user = await new userModel()
+//     const token = await generateAccessToken(user)
+//     res.send({token})
+// })
 app.post('/auth/register', async (req,res) => {
     // do something stuff
     const {email, username, password} = req.body;
@@ -41,7 +52,7 @@ app.post('/auth/register', async (req,res) => {
     // })
 
     try {
-        const token = generateAccessToken({username}) // generate token pas register
+        const token = generateAccessToken({username}); // generate token pas register
         let ada = await userModel.findOne({email}); // nampung variable doang
         if(ada) return res.status(400).send("email already exist")    // ngecek user jika sudah ada
         const user = await userModel({email,username,password}) // destructuring user
@@ -64,13 +75,28 @@ app.post('/auth/register', async (req,res) => {
 })
 
 app.post('/auth/login', async(req,res) => {
-    const {username, password} = req.body;
+    
     try {
-        let ada = await userModel.findOne({username})
-        if(!ada) return res.status(404).send('username doesnt exist');
-        const user = await userModel({username,password})
+        const user = await userModel.findOne({email:req.body.email});
+        if(user){
+            const cmp = await bcrypt.compare(req.body.password,user.password)
+            
+            if(cmp){
+                const token = generateAccessToken({user:req.body.email,role:req.body.role})
+                res.status(200).json({
+                    status:'auth works',
+                    token: token
+                })
+            }else{
+                res.send(404)
+            }
+        } else {
+            res.status(400).json({
+                status:'failed'
+            })
+        }
     } catch (error) {
-        res.status(400).send(error)
+        res.send(error)
     }
 })
 
