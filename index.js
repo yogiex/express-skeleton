@@ -8,12 +8,14 @@ const bcrypt = require('bcrypt');
 const bodyparser = require('body-parser');
 const jwt = require('jsonwebtoken');
 //auth service
-const generateAccessToken = require('./auth/jwt.strategy');
-const authenticateToken = require('./auth/jwt.strategy');
+//const auth = require('./auth/jwt.strategy');
+const {authenticateToken, generateAccessToken} = require('./auth/jwt.strategy');
+const passport = require('passport')
 
 require('dotenv').config()
+app.use(express.json())
 app.use(cors());
-app.use(bodyparser.urlencoded({extended:false}))
+//app.use(bodyparser.urlencoded({extended:false}))
 app.use(bodyparser.json())
 Mongoose.connect(process.env.MONGO_URI_TEST,{
     useNewUrlParser: true,
@@ -83,7 +85,19 @@ app.post('/auth/register', async (req,res) => {
     }
 
 })
-
+// function authenticateToken(req,res,next){
+//     //const authHeader = req.headers['authorization'];
+//     const authHeader = req.headers.authorization;
+//     const token = authHeader && authHeader.split(" ")[1]
+//     if(token == null) return res.sendStatus(401)
+   
+//     jwt.verify(token, process.env.SECRET_KEY , (err,user) =>{
+//         if(err) return res.sendStatus(403)
+//         req.user = user._id
+//         next()
+//     })
+    
+// }
 app.post('/auth/login', async(req,res) => {
     
     try {
@@ -93,7 +107,7 @@ app.post('/auth/login', async(req,res) => {
             
             if(cmp){
                 const token = generateAccessToken({id:user._id,email:req.body.email,role:user.role})
-                //const token = generateAccessToken(user._id)
+                //const token = generateAccessToken({user:req.body.email})
                 res.status(200).json({
                     status:'auth works',
                     token: token

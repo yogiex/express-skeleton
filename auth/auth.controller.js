@@ -1,18 +1,28 @@
-const passport = require('passport')
-const JwtStrategy = require('passport-jwt').Strategy;
-const ExtractJwt = require('passport-jwt').ExtractJwt;
-const userModel = require('../model/user')
-var opts = {}
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = 'secret';
+const passport = require('passport');
+const localStrategy = require('passport-local').Strategy;
+const userModel = require('../model/user');
 
-passport.use(new JwtStrategy(opts, 
-    function(jwtPayload, done){
-        return userModel.findById(jwtPayload.sub)
-        .then(user => {
-            return done(null, user)
+passport.use(
+    'login',
+    new localStrategy(
+        {
+            usernameField: 'email',
+            passwordField: 'password'
+        },
+        async (email,password,done) => {
+            try {
+                const user = await userModel.findOne({email});
+                if(!user) {
+                    return done(null,false, {message: 'User not found'})
+                }
+                const validate = await bcrypt.compare(password,user.password)
+                if(!validate){
+                    return done(null, false,{message:'wrong password'})
+                }
+                return done(null, user,{message: 'Logged in succesfully'})
+            } catch (error) {
+                return done(error)
+            }
         }
-        ).catch(err =>{
-            return done(err)
-        })
-    }))
+    )
+)
