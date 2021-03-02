@@ -105,12 +105,15 @@ app.post('/auth/login', async(req,res) => {
             
             if(cmp){
                 const token = generateAccessToken({id:user._id,email:req.body.email,role:user.role})
+                //res.setHeader('X-token',_token)
                 //const token = generateAccessToken({user:req.body.email})
                 res.status(200).json({
                     status:'auth works',
                     token: token
                 })
-               // res.header('auth-token',token)
+                
+                
+                //res.cookie("SESSIONID",token,{httpOnly:true,secure:true})
             }else{
                 res.send(404)
             }
