@@ -69,15 +69,13 @@ app.post('/auth/register', async (req,res) => {
         if(ada) return res.status(400).send("email already exist")    // ngecek user jika sudah ada
         const user = await userModel({email,username,password}) // destructuring user
         await user.save()
-        console.log(user)
+        //console.log(user)
         console.log(token)
         //res.send('registered')
         res.status(201).json({      // response status dan jwt
             status:'success',       
-            token,                  
-            data:{                  
-                user
-            }
+            token                  
+            
         })
         
     } catch (error) {
