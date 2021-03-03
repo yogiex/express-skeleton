@@ -90,15 +90,19 @@ app.post('/auth/login', async(req,res) => {
                 const token = generateAccessToken({id:user._id,email:req.body.email,role:user.role})
                 //res.setHeader('X-token',_token)
                 //const token = generateAccessToken({user:req.body.email})
-                res.status(200).json({
+
+                //ini cadangan sudah bisa
+                res.status(200).json({           
                     status:'auth works',
-                    token: token
+                    token: token,
+                    _id: user._id,
+                    email: user.email
                 })
+                //res.status(200).send({token})
                 
-                
-                res.setHeader("Set-Cookie", token)
+                //res.setHeader("Set-Cookie", token)
                 //res.cookie("session_id",token)
-                //res.cookie("SESSION_ID",token,{httpOnly:true,secure:true,maxAge:600000}).send('cookie set')
+                //res.cookie("SESSION_ID", token, {httpOnly:true,secure:true,maxAge:600000}).send('cookie set')
             }else{
                 res.send(404)
             }
